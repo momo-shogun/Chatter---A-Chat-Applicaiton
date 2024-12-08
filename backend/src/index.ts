@@ -1,26 +1,29 @@
 import { WebSocketServer, WebSocket } from "ws";
 
-const wss = new WebSocketServer({ port: 8080 })
+const wss = new WebSocketServer({ port: 8080 });
 
-let userCount = 0
-let allSockets: WebSocket[] = []
+let allSockets = new Map<WebSocket, string>();
+
 wss.on("connection", (socket) => {
-    allSockets.push(socket)
-    userCount++;
-    // allSockets.forEach((socket) => {
-    //     socket.on("message", (message) => {
-    //         socket.send(message.toString() + "from user #" + userCount)
-    //     })
-    // })
+  socket.on("message", (message) => {
+    const parseMessage = JSON.parse(message as unknown as string);
 
-    socket.on("message", (message) => {
-        allSockets.forEach((s) => {
-            s.send(message.toString() + "from user #" + userCount)
-        })
-    })
+    if (parseMessage.type === "join") {
+      allSockets.set(socket, parseMessage.payload.roomId);
+    }
 
-    // socket.on("message", (message) => {
-    //     console.log("message received " + message.toString() + " from user #" + userCount);
-    //     socket.send(message.toString())
-    // })
-})  
+    if (parseMessage.type === "chat") {
+      const currentUserRoom = allSockets.get(socket);
+      if (!currentUserRoom) return;
+
+      for (const [s, roomId] of allSockets.entries()) {
+        if (roomId === currentUserRoom && socket !== s) {
+          s.send(parseMessage.payload.message);
+        }
+      }
+    }
+  });
+  socket.on("close", () => {
+    allSockets.delete(socket);
+  });
+});
