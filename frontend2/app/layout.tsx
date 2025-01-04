@@ -25,24 +25,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} `}>
-        <div className="max-w-screen-xl mx-auto px-4 md:px-8">
-          <div className="items-start justify-between py-4 border-b md:flex">
-            <div>
-              <h3 className="text-[#9e2a2b] drop-shadow-md text-2xl font-bold">
-                CHATTER
-              </h3>
-            </div>
-            <div className="items-center gap-x-3 mt-6 md:mt-0 sm:flex">
-              <a
-                href="/"
-                className="block px-4 py-2 text-center text-[#9e2a2b] duration-150 font-medium bg-[#fff3b0]/70 rounded-lg hover:bg-[#fff3b0]  md:text-sm"
-              >
-                Join Room
-              </a>
-            </div>
-          </div>
-          {children}
-        </div>
+        
+        {children}
+
       </body>
     </html>
   );
