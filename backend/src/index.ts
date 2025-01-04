@@ -18,7 +18,7 @@ wss.on("connection", (socket) => {
 
       for (const [s, roomId] of allSockets.entries()) {
         if (roomId === currentUserRoom && socket !== s) {
-          s.send(parseMessage.payload.message);
+          s.send(JSON.stringify(parseMessage.payload.message));
         }
       }
     }
